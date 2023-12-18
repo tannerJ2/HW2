@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title> Yahtzee </title>
+
+    <style type='text/css'>
+        <!--
+
+        h1.title { text-align: center; }
+
+        body { background-color: #e7e7e7 }
+
+        div.Dice { text-align: center }
+
+        table.ScoreTbl { margin-left: auto; margin-right: auto; }
+
+        td.ScoreLbl { font-family: Arial; font-weight: bold; }
+
+        td.DiceTD { border: 2px groove #ababab; width: 3em; height: 1.5em; background-color: #acadfd; }
+
+        td.scoreTD { text-align: center; }
+
+        button.roll-button { color: #efefaf; background-color: #5a00ca; font-family: times-new-roman;
+            padding-top: 5px; padding-bottom: 5px; margin-left: 140%; font-weight: bold; }
+
+        button.new-game-button { background-color: #afbfbf; color: #000055; margin-left: 120%; width: 100% }
+
+        -->
+
+    </style>
+
+</head>
+
+
+
+<body>
+
+    <h1 class="title">Yahtzee</h1>
+
+    <div class='Dice'>
+        <img id='die0' onclick='holdDie(0)' src='pix/dice0.gif'>
+        <img id='die1' onclick='holdDie(1)' src='pix/dice0.gif'>
+        <img id='die2' onclick='holdDie(2)' src='pix/dice0.gif'>
+        <img id='die3' onclick='holdDie(3)' src='pix/dice0.gif'>
+        <img id='die4' onclick='holdDie(4)' src='pix/dice0.gif'>
+    </div>
+
+    <table class='ScoreTbl'>
+        <tr>
+            <td class='ScoreLbl'> 1's </td>
+            <td id='score0' class='DiceTD' onmouseover='PreviewScore(0)' onmouseout='ClearScore(0)' onclick='Score(0)'> </td>
+            <td class='scoreTD' rowspan='5'><button onclick='Roll()' class='roll-button'> Roll </button></td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> 2's </td>
+            <td id='score1' class='DiceTD' onmouseover='PreviewScore(1)' onmouseout='ClearScore(1)' onclick='Score(1)'> </td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> 3's </td>
+            <td id='score2' class='DiceTD' onmouseover='PreviewScore(2)' onmouseout='ClearScore(2)' onclick='Score(2)'> </td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> 4's </td>
+            <td id='score3' class='DiceTD' onmouseover='PreviewScore(3)' onmouseout='ClearScore(3)' onclick='Score(3)'> </td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> 5's </td>
+            <td id='score4' class='DiceTD' onmouseover='PreviewScore(4)' onmouseout='ClearScore(4)' onclick='Score(4)'> </td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> 6's </td>
+            <td id='score5' class='DiceTD' onmouseover='PreviewScore(5)' onmouseout='ClearScore(5)' onclick='Score(5)'> </td>
+            <td class='scoreTD' rowspan='5'><button onclick='NewGame()' class='new-game-button'> New game </button></td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> 3 of a kind </td>
+            <td id='score6' class='DiceTD' onmouseover='PreviewScore(6)' onmouseout='ClearScore(6)' onclick='Score(6)'> </td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> 4 of a kind </td>
+            <td id='score7' class='DiceTD' onmouseover='PreviewScore(7)' onmouseout='ClearScore(7)' onclick='Score(7)'> </td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> Yahtzee </td>
+            <td id='score8' class='DiceTD' onmouseover='PreviewScore(8)' onmouseout='ClearScore(8)' onclick='Score(8)'> </td>
+        </tr>
+        <tr>
+            <td class='ScoreLbl'> Total </td>
+            <td id='totalScore' class='DiceTD'> </td>
+        </tr>
+    </table>
+
+
+    <script language='JavaScript'>
+        var DiceVal = new Array(0, 0, 0, 0, 0);
+        var freq = new Array(0, 0, 0, 0, 0, 0, 0);
+        var DieSlcted = new Array(false, false, false, false, false);
+        var CategoryScrd = new Array(false, false, false, false, false, false, false, false, false);
+        var rollCnt = 0;
+        var totalScore = 0;
+        var Click = false;
+
+        function Roll() {
+            if (rollCnt < 3) {
+                freq = new Array(0, 0, 0, 0, 0, 0, 0);
+                for (var i = 0; i < 5; i++) {
+                    var dieElement = document.getElementById('die' + i);
+                    if (!DieSlcted[i]) {
+                        DiceVal[i] = Math.floor(6 * Math.random()) + 1;
+                        dieElement.src = 'pix/dice' + DiceVal[i] + '.gif';
+                    }
+                    freq[DiceVal[i]] += 1;
+                }
+            }
+            rollCnt += 1;
+            Click = false;
+        }
+
+        function holdDie(ind) {
+            var dieElement = document.getElementById('die' + ind);
+            DieSlcted[ind] = !DieSlcted[ind];
+            if (DieSlcted[ind]) {
+                dieElement.src = 'pix/diceX' + DiceVal[ind] + '.gif';
+            } else {
+                dieElement.src = 'pix/dice' + DiceVal[ind] + '.gif';
+            }
+        }
+
+        function clearDieSlcted() {
+            for (var i = 0; i < 5; i++) {
+                var dieElement = document.getElementById('die' + i);
+                dieElement.src = 'pix/dice0.gif';
+                DieSlcted[i] = false;
+                DiceVal[i] = 0;
+            }
+        }
+
+        function PreviewScore(catIndex) {
+            if (CategoryScrd[catIndex] == false) {
+                var scoreCell = document.getElementById('score' + catIndex);
+                var currentScore = 0;
+                var sum = 0;
+                for (var i = 0; i < 5; i++) {
+                    sum += DiceVal[i];
+                }
+                if (catIndex == 6 || catIndex == 7 || catIndex == 8) {
+                    scoreCell.innerHTML = 0;
+                    for (var h = 0; h < 7; h++) {
+                        if (freq[h] >= (catIndex - 5)) {
+                            currentScore = sum;
+                            scoreCell.innerHTML = sum;
+                        }
+                    }
+                    return currentScore;
+                } else {
+                    currentScore = freq[catIndex + 1] * (catIndex + 1);
+                    scoreCell.innerHTML = currentScore;
+                    return currentScore;
+                }
+            }
+        }
+
+        function Score(catIndex) {
+            if (CategoryScrd[catIndex] == false && Click == false) {
+                rollCnt = 0;
+                Click = true;
+                var totalScoreCell = document.getElementById('totalScore');
+                totalScore += PreviewScore(catIndex);
+                totalScoreCell.innerHTML = totalScore;
+                clearDieSlcted();
+                CategoryScrd[catIndex] = true;
+            }
+        }
+
+        function ClearScore(catIndex) {
+            if (CategoryScrd[catIndex] == false) {
+                var scoreCell = document.getElementById('score' + catIndex);
+                scoreCell.innerHTML = '';
+            }
+        }
+
+        function NewGame() {
+            clearDieSlcted();
+            for (var i = 0; i < 9; i++) {
+                CategoryScrd[i] = false;
+                ClearScore(i);
+            }
+            var totalScoreCell = document.getElementById('totalScore');
+            totalScoreCell.innerHTML = '';
+            rollCnt = 0;
+            totalScore = 0;
+            Click = false;
+            freq = new Array(0, 0, 0, 0, 0, 0, 0);
+        }
+
+    </script>
+
+<body>
+</html>
